@@ -1,0 +1,20 @@
+get_git_branch() {
+    local issue_id=$1
+    local api_url='https://api.linear.app/graphql'
+    local auth_token=$2
+
+    local json_payload=$(cat <<EOF
+{
+  "query": "query GetGitBranch(\$issueId: String!) {\\n  issue(id: \$issueId) {\\n    branchName\\n  }\\n}",
+  "variables": {
+    "issueId": "${issue_id}"
+  }
+}
+EOF
+    )
+
+    curl -s --location "${api_url}" \
+         --header "Authorization: ${auth_token}" \
+         --header 'Content-Type: application/json' \
+         --data "${json_payload}" | jq ".data.issue.branchName" | tr -d '"'
+}
