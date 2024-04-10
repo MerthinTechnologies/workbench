@@ -43,7 +43,7 @@ function display_and_select_issue() {
 
     identifiers=()
     local counter=1
-    echo "This are the current tasks assigned to you (you should move any task to TODO or IN PROGRESS status in order to appear here)"
+    echo "These are the current tasks assigned to you (you should move any task to TODO or IN PROGRESS status in order to appear here)"
     echo ""
 
     echo "In Progress:"
