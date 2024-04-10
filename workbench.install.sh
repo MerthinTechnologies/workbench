@@ -35,8 +35,8 @@ mkdir -p $CFGDIR
 mkdir -p $BINDIR
 sleep 1
 echo "Downloading components"
-curl -sLo $CFGDIR/workbench.functions-1.sh https://raw.githubusercontent.com/MerthinTechnologies/workbench/master/README.md
-curl -sLo $BINDIR/workbench https://raw.githubusercontent.com/MerthinTechnologies/workbench/master/README.md
+curl -sLo $CFGDIR/workbench.functions-1.sh https://raw.githubusercontent.com/MerthinTechnologies/workbench/master/dist/workbench.functions.sh
+curl -sLo $BINDIR/workbench https://raw.githubusercontent.com/MerthinTechnologies/workbench/master/dist/workbench
 chmod 755 $BINDIR/workbench
 echo ""
 echo "Merthin's workbench installed."
