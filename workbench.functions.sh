@@ -43,7 +43,7 @@ function display_and_select_issue() {
 
     identifiers=()
     local counter=1
-    echo "These are the current tasks assigned to you (you should move any task to TODO or IN PROGRESS status in order to appear here)"
+    echo "This are the current tasks assigned to you (you should move any task to TODO or IN PROGRESS status in order to appear here)"
     echo ""
 
     echo "In Progress:"
@@ -74,4 +74,20 @@ function display_and_select_issue() {
     local selected_identifier=${identifiers[$((issue_num-1))]}
     
     echo "$selected_identifier" > /tmp/wbselection
+}
+
+function get_store_token() {
+    local system=$1
+    CFGDIR=~/.config/workbench
+    mkdir -p $CFGDIR
+    local token_file="$CFGDIR/$system.token"
+
+    echo "Enter your $system token:"
+    read -s password
+
+    echo $password > "$token_file"
+
+    chmod 600 "$token_file"
+
+    echo "Your $system token has been saved to $token_file"
 }
