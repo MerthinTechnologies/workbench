@@ -66,7 +66,6 @@ echo "$(date +%s)" > .workbench
 git add .workbench 
 git commit -m "initializing branch"
 git push --set-upstream origin $linearBranch
-git push -u origin $linearBranch
 
 issueTitle=$(get_title_by_identifier "$linearId" "$ISSUES")
 
