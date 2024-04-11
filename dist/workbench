@@ -1,2 +1,84 @@
 #!/bin/bash
 
+CFGDIR="$HOME/.config/workbench"
+source $CFGDIR/workbench.functions.sh
+
+option_processed=0
+
+while [ "$1" != "" ]; do
+    case $1 in
+        --configure )
+            option_processed=1
+            request_and_store_tokens
+            ;;
+        --version )
+            option_processed=1
+            echo "version 0.0.1"          
+            ;;
+        --help )
+            option_processed=1
+            display_help "$0"          
+            ;;
+        * )
+            echo "Invalid option: $1"
+            exit 1
+    esac
+    shift
+done
+
+if [ $option_processed -eq 1 ]; then
+    exit 0
+fi
+
+gitToken=$(check_file "$CFGDIR/git.token")
+linearToken=$(check_file "$CFGDIR/linear.token")
+
+TO_DO=$(get_issues "Todo" $linearToken)
+IN_PROGRESS=$(get_issues "In Progress" $linearToken)
+
+ISSUES=$(echo $TO_DO $IN_PROGRESS | jq -s '.[0] + .[1]')
+
+display_and_select_issue "$ISSUES"
+linearId=$(</tmp/wbselection)
+rm -fr /tmp/wbselection
+linearBranch=$(get_git_branch $linearId $linearToken)
+
+get_remote_repo_url
+echo ""
+check_uncommitted_changes
+echo ""
+select_remote_branch
+echo ""
+
+git checkout $(</tmp/prbranchselection)
+echo "Pulling latest changes from $(</tmp/prbranchselection)"
+rm -fr /tmp/prbranchselection
+git pull
+echo ""
+
+echo "Checking out in the dedicated branch: $linearBranch"
+if ! git checkout -b $linearBranch; then
+    echo "Failed to create or check out the branch. A branch named $linearBranch already exists"
+    exit 1
+fi
+
+echo "$(date +%s)" > .workbench
+git add .workbench 
+git commit -m "initializing branch"
+git push --set-upstream origin $linearBranch
+git push -u origin $linearBranch
+
+issueTitle=$(get_title_by_identifier "$linearId" "$ISSUES")
+
+gh auth login --with-token < $CFGDIR/git.token
+
+echo ""
+echo "Creating a Draft PR"
+echo ""
+
+if PR=$(gh pr create --title "$linearId - $issueTitle" -d --body "Resolving $linearId - $issueTitle");
+then
+    echo "PR Drafted. Ready to begin yor work"
+else
+    echo "PR creation process failed" 
+fi
