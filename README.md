@@ -15,7 +15,7 @@ As a result, you'll get a drafted PR and a referenced branch name in both system
 
 ## Installation
 ### Install the latest version
-curl -sL https://raw.githubusercontent.com/MerthinTechnologies/workbench/master/workbench.install.sh | sh
+`curl -sL https://raw.githubusercontent.com/MerthinTechnologies/workbench/master/workbench.install.sh | sh`
 
 ## Usage
 Usage: workbench [option]
